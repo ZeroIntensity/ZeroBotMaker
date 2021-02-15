@@ -7,9 +7,8 @@ class Client:
 
   def changefile(self, name='bot.py'):
     self.file = name
-
   def build(self):
-    self.precode = f'# This code was built with ZeroBotMaker using discord.py\nimport discord\nfrom discord.ext import commands\nclient = commands.Bot(command_prefix = "{self.prefix}")\n'
+    self.precode = f'# This code was built with ZeroBotMaker using discord.py\nimport discord\nfrom discord.ext import commands\nimport random\nclient = commands.Bot(command_prefix = "{self.prefix}")\n'
     self.code = self.precode + self.code
     f = open(self.file, 'w+')
     f.write(self.code)
@@ -18,14 +17,26 @@ class Client:
 
   def changeprefix(self, pre='!'):
     self.prefix = pre
-
+  def randommessage(self, response, responses, name='randommessage'):
+    self.code += f'''
+@client.command()
+async def {name}(ctx):
+  choice = random.choice({responses})
+  await ctx.send(f"{response}")
+'''
   def reply(self, response, name='reply'):
     self.code += f'''
-@client.command()tx):
+@client.command()
+async def {name}(ctx):
   await ctx.send(f"{response}")
 async def {name}(c
 '''
-
+  def dmreply(self, response, name='dmreply'):
+    self.code += f'''
+@client.command()
+async def {name}(ctx):
+  await ctx.author.send(f"{response}")
+'''
   def ban(self, response, failedresponse, name='ban'):
     self.code += f'''
 @client.command()
@@ -72,7 +83,6 @@ async def {name}(ctx, member: discord.Member = None, reason=None):
 async def {name}(ctx):
   bot_ping = round(client.latency * 1000)
   await ctx.send(f"{response}")'''
-
   def purge(self, response, name='purge'):
     self.code += f'''
 @client.command()
@@ -111,7 +121,6 @@ async def {name}(ctx):
 '''
   def randomnumber(self, response, min, max, name='randomnumber'):
     self.code += f'''
-import random
 
 @client.command()
 async def {name}(ctx):
