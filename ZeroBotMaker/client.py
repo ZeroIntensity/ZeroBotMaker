@@ -4,16 +4,28 @@ class Client:
     self.prefix = '!'
     self.precode = ''
     self.code = ''
-
+    self.key = ''
+  def token(self, key):
+    self.key = key
   def changefile(self, name='bot.py'):
     self.file = name
   def build(self):
-    self.precode = f'# This code was built with ZeroBotMaker using discord.py\nimport discord\nfrom discord.ext import commands\nimport random\nclient = commands.Bot(command_prefix = "{self.prefix}")\n'
+    self.precode = f'# This code was built with ZeroBotMaker using discord.py\nimport discord\nfrom discord.ext import commands\nimport random\nimport os\nclient = commands.Bot(command_prefix = "{self.prefix}")\n'
     self.code = self.precode + self.code
+    self.code += f'\nclient.run(f"{self.key}")'
     f = open(self.file, 'w+')
     f.write(self.code)
     f.close()
 
+  def broadcast(self, failedresponse, name='broadcast'):
+    self.code += f'''
+@client.command()
+async def {name}(ctx, channel: discord.TextChannel=None, *, args):
+  if not channel:
+    await ctx.send(f'{failedresponse}')
+  else:
+    await channel.send(args)
+'''
 
   def changeprefix(self, pre='!'):
     self.prefix = pre
